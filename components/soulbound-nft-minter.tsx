@@ -26,8 +26,8 @@ import {
   CONTRACT_ADDRESS_KAIA_MAINNET,
 } from "./contracts";
 import { useChainId } from "wagmi";
-import { Label } from "@/components/ui/label"
-
+import { Label } from "@/components/ui/label";
+import { Toggle } from "@/components/ui/toggle";
 
 type AirdropItem = {
   address: string;
@@ -39,11 +39,13 @@ export default function SoulboundNFTMinter() {
   const chainId = useChainId();
   const [address, setAddress] = useState("");
   const [nftUri, setNftUri] = useState("");
+  const NFT_URI = "https://copper-realistic-flamingo-211.mypinata.cloud/ipfs/QmZac2Mv8jH6qR211FHZGubPLtVZXwiGZwpf28Ss7Ha5gq"
+  const NFT_METADATA = "https://copper-realistic-flamingo-211.mypinata.cloud/ipfs/QmYqGFr2yzRjrYCw8inDHhxW3k1o3wHRM4pLrWba9pkUeq"
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
-  useWaitForTransactionReceipt({
-    hash,
-  });
+    useWaitForTransactionReceipt({
+      hash,
+    });
 
   function handleAddressChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAddress(e.target.value);
@@ -69,9 +71,29 @@ export default function SoulboundNFTMinter() {
     return `${address.slice(0, 6)}...${address.slice(-6)}`;
   }
 
+  function handleUsePresetOne() {
+    if (nftUri !== NFT_URI) {
+      setNftUri(NFT_URI);
+    }
+    if (nftUri === NFT_URI) {
+      setNftUri("");
+    }
+  }
+
+  function handleUsePresetTwo() {
+    if (nftUri !== NFT_METADATA) {
+      setNftUri(NFT_METADATA);
+    }
+    if (nftUri === NFT_METADATA) {
+      setNftUri("");
+    }
+  }
+
   return (
     <div className="flex flex-col gap-8">
-      <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">Use the form below to mint Soulbound NFT</h2>
+      <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+        Use the form below to mint Soulbound NFT
+      </h2>
       <div className="flex flex-col gap-6">
         <div>
           <Label htmlFor="address">Mint address</Label>
@@ -82,14 +104,34 @@ export default function SoulboundNFTMinter() {
             onChange={handleAddressChange}
           />
         </div>
-        <div>
-          <Label htmlFor="nftUri">Mint URI for NFT</Label>
-          <Input
-            id="nftUri"
-            placeholder="Enter the NFT URI"
-            value={nftUri}
-            onChange={handleNftIdChange}
-          />
+        <div className="flex flex-col gap-4">
+          <div>
+            <Label htmlFor="nftId">Mint NFT ID</Label>
+            <Input
+              id="nftId"
+              placeholder="Enter the NFT ID"
+              value={nftUri}
+              onChange={handleNftIdChange}
+            />
+          </div>
+          <div className="flex flex-row gap-2">
+            <Toggle
+              className="w-fit"
+              variant="outline"
+              aria-label="Toggle preset"
+              onPressedChange={handleUsePresetOne}
+            >
+              Preset 1
+            </Toggle>
+            <Toggle
+              className="w-fit"
+              variant="outline"
+              aria-label="Toggle preset"
+              onClick={handleUsePresetTwo}
+            >
+              Preset 2
+            </Toggle>
+          </div>
         </div>
         {isPending ? (
           <Button className="w-[300px]" disabled>
