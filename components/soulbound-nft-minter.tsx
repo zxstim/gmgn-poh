@@ -147,7 +147,6 @@ export default function SoulboundNFTMinter() {
                 </DialogHeader>
                 <Scanner
                   onScan={(result) => handleQrScan(result[0].rawValue)}
-                  classNames="w-full h-full"
                 />
               </DialogContent>
             </Dialog>
