@@ -13,10 +13,8 @@ import {
   Loader2,
   Check,
   ScanLine,
-  Info,
   Trash2,
   ThumbsUp,
-  CircleX,
 } from "lucide-react";
 import { SOULBOUND_NFT_ABI } from "./abis";
 import {
@@ -105,14 +103,14 @@ export default function SoulboundNFTMinter() {
       // delay the success message for 2 seconds
       setTimeout(() => {
         setQrScanSuccess(false);
-      }, 2000);
+      }, 5000);
     } else {
       setAddress(data);
       setQrScanSuccess(true);
       // delay the success message for 2 seconds
       setTimeout(() => {
         setQrScanSuccess(false);
-      }, 2000);
+      }, 5000);
     }
   }
 
@@ -135,19 +133,21 @@ export default function SoulboundNFTMinter() {
               <DialogTrigger>
                 <ScanLine className="w-6 h-6" />
               </DialogTrigger>
-              <DialogContent className="h-full w-full">
+              <DialogContent className="h-screen w-screen lg:h-full lg:w-full">
                 <DialogHeader>
                   <DialogTitle>QR Scanner</DialogTitle>
                   <DialogDescription>
                     Scan the QR code to autofill the mint address
                   </DialogDescription>
-                  {
-                    // if the scan was successful, show a thumbs up icon
-                    qrScanSuccess && <p className="flex flex-row gap-2"><ThumbsUp className="h-6 w-6 mr-2" />Scan completed</p>
-                  }
+                  <div className="flex flex-col items-center justify-center">
+                    {
+                      qrScanSuccess && <p className="flex flex-row gap-2 text-blue-600"><ThumbsUp className="h-6 w-6" />Scan completed</p>
+                    }
+                  </div>
                 </DialogHeader>
                 <Scanner
                   onScan={(result) => handleQrScan(result[0].rawValue)}
+                  classNames="w-full h-full"
                 />
               </DialogContent>
             </Dialog>
