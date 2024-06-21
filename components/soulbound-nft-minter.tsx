@@ -12,7 +12,7 @@ import { Address } from "viem";
 import {
   Loader2,
   Check,
-  Plus,
+  ScanLine,
   Info,
   Trash2,
   ThumbsUp,
@@ -25,21 +25,26 @@ import {
 } from "./contracts";
 import { useChainId } from "wagmi";
 import { Label } from "@/components/ui/label";
-import { Scanner } from '@yudiel/react-qr-scanner';
-
-type AirdropItem = {
-  address: string;
-  nftId: string;
-};
+import { Scanner } from "@yudiel/react-qr-scanner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function SoulboundNFTMinter() {
   const { data: hash, error, isPending, writeContract } = useWriteContract();
   const chainId = useChainId();
   const [address, setAddress] = useState("");
   const [nftUri, setNftUri] = useState("");
-  const NFT_URI = "https://copper-realistic-flamingo-211.mypinata.cloud/ipfs/QmZac2Mv8jH6qR211FHZGubPLtVZXwiGZwpf28Ss7Ha5gq"
-  const NFT_METADATA = "https://copper-realistic-flamingo-211.mypinata.cloud/ipfs/QmYqGFr2yzRjrYCw8inDHhxW3k1o3wHRM4pLrWba9pkUeq"
-
+  const NFT_URI =
+    "https://copper-realistic-flamingo-211.mypinata.cloud/ipfs/QmZac2Mv8jH6qR211FHZGubPLtVZXwiGZwpf28Ss7Ha5gq";
+  const NFT_METADATA =
+    "https://copper-realistic-flamingo-211.mypinata.cloud/ipfs/QmYqGFr2yzRjrYCw8inDHhxW3k1o3wHRM4pLrWba9pkUeq";
+  const [qrScanSuccess, setQrScanSuccess] = useState(false);
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
@@ -92,22 +97,63 @@ export default function SoulboundNFTMinter() {
     setNftUri("");
   }
 
+  function handleQrScan(data: string) {
+    if (data.includes(":")) {
+      const splitData = data.split(":");
+      setAddress(splitData[1]);
+      setQrScanSuccess(true);
+      // delay the success message for 2 seconds
+      setTimeout(() => {
+        setQrScanSuccess(false);
+      }, 2000);
+    } else {
+      setAddress(data);
+      setQrScanSuccess(true);
+      // delay the success message for 2 seconds
+      setTimeout(() => {
+        setQrScanSuccess(false);
+      }, 2000);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
         Use the form below to mint Soulbound NFT
       </h2>
-      <Scanner onScan={(result) => console.log(result)} />
       <div className="flex flex-col gap-6">
-        <div>
+        <div className="flex flex-col gap-1">
           <Label htmlFor="address">Mint address</Label>
-          <Input
-            id="address"
-            placeholder="Enter an address"
-            value={address}
-            onChange={handleAddressChange}
-          />
+          <div className="flex flex-row gap-4">
+            <Input
+              id="address"
+              placeholder="Enter an address"
+              value={address}
+              onChange={handleAddressChange}
+            />
+            <Dialog>
+              <DialogTrigger>
+                <ScanLine className="w-6 h-6" />
+              </DialogTrigger>
+              <DialogContent className="h-full w-full">
+                <DialogHeader>
+                  <DialogTitle>QR Scanner</DialogTitle>
+                  <DialogDescription>
+                    Scan the QR code to autofill the mint address
+                  </DialogDescription>
+                  {
+                    // if the scan was successful, show a thumbs up icon
+                    qrScanSuccess && <p className="flex flex-row gap-2"><ThumbsUp className="h-6 w-6 mr-2" />Scan completed</p>
+                  }
+                </DialogHeader>
+                <Scanner
+                  onScan={(result) => handleQrScan(result[0].rawValue)}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
+
         <div className="flex flex-col gap-4">
           <div>
             <Label htmlFor="nftId">Mint NFT ID</Label>
