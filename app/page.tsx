@@ -1,4 +1,5 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import SoulboundNFTMinter from "@/components/soulbound-nft-minter";
 
 export default function Home() {
   return (
@@ -9,7 +10,7 @@ export default function Home() {
         <p className="leading-7 [&:not(:first-child)]:mt-6">Mint Soulbound NFT</p>
       </div>
       <div className="flex flex-col gap-8">
-        <h1>Test</h1>
+        <SoulboundNFTMinter />
       </div>
     </div>
   );
