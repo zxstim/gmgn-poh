@@ -7,10 +7,8 @@ import {
   type BaseError,
   useWaitForTransactionReceipt,
   useWriteContract,
-  useAccount,
-  useReadContracts,
 } from "wagmi";
-import { parseEther, formatEther, formatUnits, Address } from "viem";
+import { Address } from "viem";
 import {
   Loader2,
   Check,
@@ -27,7 +25,7 @@ import {
 } from "./contracts";
 import { useChainId } from "wagmi";
 import { Label } from "@/components/ui/label";
-import { Toggle } from "@/components/ui/toggle";
+import { Scanner } from '@yudiel/react-qr-scanner';
 
 type AirdropItem = {
   address: string;
@@ -41,6 +39,7 @@ export default function SoulboundNFTMinter() {
   const [nftUri, setNftUri] = useState("");
   const NFT_URI = "https://copper-realistic-flamingo-211.mypinata.cloud/ipfs/QmZac2Mv8jH6qR211FHZGubPLtVZXwiGZwpf28Ss7Ha5gq"
   const NFT_METADATA = "https://copper-realistic-flamingo-211.mypinata.cloud/ipfs/QmYqGFr2yzRjrYCw8inDHhxW3k1o3wHRM4pLrWba9pkUeq"
+
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
@@ -89,11 +88,16 @@ export default function SoulboundNFTMinter() {
     }
   }
 
+  function handleClearNftUri() {
+    setNftUri("");
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
         Use the form below to mint Soulbound NFT
       </h2>
+      <Scanner onScan={(result) => console.log(result)} />
       <div className="flex flex-col gap-6">
         <div>
           <Label htmlFor="address">Mint address</Label>
@@ -115,22 +119,23 @@ export default function SoulboundNFTMinter() {
             />
           </div>
           <div className="flex flex-row gap-2">
-            <Toggle
+            <Button
               className="w-fit"
               variant="outline"
-              aria-label="Toggle preset"
-              onPressedChange={handleUsePresetOne}
+              onClick={handleUsePresetOne}
             >
               Preset 1
-            </Toggle>
-            <Toggle
+            </Button>
+            <Button
               className="w-fit"
               variant="outline"
-              aria-label="Toggle preset"
               onClick={handleUsePresetTwo}
             >
               Preset 2
-            </Toggle>
+            </Button>
+            <Button variant="outline" size="icon" onClick={handleClearNftUri}>
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         </div>
         {isPending ? (

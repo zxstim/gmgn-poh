@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <main className="flex flex-col gap-8 items-center justify-center py-12 px-4 lg:p-36">
-            <div className="hidden lg:flex lg:flex-col lg:gap-12 max-w-3xl">
+            <div className="flex flex-col gap-12 max-w-3xl">
               {children}
             </div>
           </main>
