@@ -9,13 +9,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { Address } from "viem";
-import {
-  Loader2,
-  Check,
-  ScanLine,
-  Trash2,
-  ThumbsUp,
-} from "lucide-react";
+import { Loader2, Check, ScanLine, Trash2, ThumbsUp, Hourglass } from "lucide-react";
 import { SOULBOUND_NFT_ABI } from "./abis";
 import {
   CONTRACT_ADDRESS_KAIROS_TESTNET,
@@ -29,6 +23,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -133,21 +128,31 @@ export default function SoulboundNFTMinter() {
               <DialogTrigger>
                 <ScanLine className="w-6 h-6" />
               </DialogTrigger>
-              <DialogContent className="h-screen w-screen lg:h-full lg:w-full">
+              <DialogContent>
                 <DialogHeader>
                   <DialogTitle>QR Scanner</DialogTitle>
                   <DialogDescription>
                     Scan the QR code to autofill the mint address
                   </DialogDescription>
-                  <div className="flex flex-col items-center justify-center">
-                    {
-                      qrScanSuccess && <p className="flex flex-row gap-2 text-blue-600"><ThumbsUp className="h-6 w-6" />Scan completed</p>
-                    }
-                  </div>
                 </DialogHeader>
                 <Scanner
                   onScan={(result) => handleQrScan(result[0].rawValue)}
                 />
+                <DialogFooter>
+                  <div className="flex flex-col items-center justify-center">
+                    {qrScanSuccess ? (
+                      <p className="flex flex-row gap-2 text-blue-600">
+                        <ThumbsUp className="h-6 w-6" />
+                        Scan completed
+                      </p>
+                    ) : (
+                      <p className="flex flex-row gap-2 text-yellow-600">
+                        <Loader2 className="h-6 w-6 animate-spin" />
+                        Scanning...
+                      </p>
+                    )}
+                  </div>
+                </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
